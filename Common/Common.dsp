@@ -149,6 +149,22 @@ SOURCE=.\Gv\GvMotion.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\Gv\GvPath.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Gv\GvRotateMotion.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Gv\GvScaleMotion.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Gv\GvTranslateMotion.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\Gv\GvUniverse.cpp
 # End Source File
 # Begin Source File
@@ -366,6 +382,22 @@ SOURCE=.\Gv\GvCamera.h
 # Begin Source File
 
 SOURCE=.\Gv\GvMotion.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Gv\GvPath.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Gv\GvRotateMotion.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Gv\GvScaleMotion.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Gv\GvTranslateMotion.h
 # End Source File
 # Begin Source File
 

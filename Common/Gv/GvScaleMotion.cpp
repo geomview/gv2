@@ -26,7 +26,7 @@ GvScaleMotion::GvScaleMotion(MotionType   type,
 }
 
 void GvScaleMotion::ComputeLocalTransform(Transform3 *M,
-					   unsigned int t = 0)
+					   unsigned int t)
 {
   double s = exp( (mDx-mDy)/2 );
   M->Scale(s, s, s);

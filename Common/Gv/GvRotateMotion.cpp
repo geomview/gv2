@@ -42,7 +42,7 @@ GvRotateMotion::GvRotateMotion(MotionType   type,
 static char buffer[1024];
 
 void GvRotateMotion::ComputeLocalTransform(Transform3 *M,
-					   unsigned int t = 0)
+					   unsigned int t)
 {
   // This is not right yet; just an approximation to test the rest of
   // the motion machinery.  The real version should do something more

@@ -26,7 +26,7 @@ GvTranslateMotion::GvTranslateMotion(MotionType   type,
 }
 
 void GvTranslateMotion::ComputeLocalTransform(Transform3 *M,
-					   unsigned int t = 0)
+					   unsigned int t)
 {
   M->Translate(mDx, -mDy, 0);
 }
