@@ -1,6 +1,8 @@
 INCLUDES = $(default_includes)
 EXTRA_DIST = Headers GvCamera.i GvUniverse.i \
-             GvAction.i GvMotion.i GvRotateMotion.i GvTranslateMotion.i GvPath.i \
+             GvAction.i GvMotion.i \
+	     GvRotateMotion.i GvTranslateMotion.i GvScaleMotion.i \
+	     GvPath.i \
              GvApp.h GvApp.cpp
 
 
@@ -14,4 +16,5 @@ libGv_a_SOURCES =              \
     GvMotion.h GvMotion.cpp    \
     GvRotateMotion.h GvRotateMotion.cpp    \
     GvTranslateMotion.h GvTranslateMotion.cpp    \
+    GvScaleMotion.h GvScaleMotion.cpp    \
     GvUniverse.h GvUniverse.cpp

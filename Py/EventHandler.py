@@ -20,6 +20,8 @@ class EventHandler:
     def SetMotionMode(self, mode):
 	if (mode == "translate"):
 	    self.motionConstructor = GvTranslateMotion
+	elif (mode == "scale"):
+	    self.motionConstructor = GvScaleMotion
 	else:
 	    self.motionConstructor = GvRotateMotion
 

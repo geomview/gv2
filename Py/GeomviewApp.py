@@ -6,6 +6,7 @@ from CameraFrame       import *
 from PyGv              import *
 from TestTimer         import *
 from Tree              import *
+from os.path           import basename
 
 #from time             import sleep
 
@@ -23,8 +24,11 @@ class GeomviewApp(wxApp):
 	self.actionList   = []
 	self.universe  = GvUniverse()
 	g = self.universe.GetWorldList()
-	self.target = GvPath(self.universe, g);
+	self.SetTarget( g, false )
+	self.target = GvPath(self.universe, g)
 	self.center = GvPath(self.universe, g);
+	self.geomCounter = 0;
+	self.treePanel.AddWorld(self.universe.GetWorldList(), "[g0] World")
 
     def LoadFile(self, file):
         gop = GeomOoglParser()
@@ -35,7 +39,10 @@ class GeomviewApp(wxApp):
             print "got an exception!"
             sys.exit()
 	self.universe.AddGeometry( object )
-	self.target = GvPath(self.universe, object )
+	self.SetTarget( object )
+	++self.geomCounter
+	self.treePanel.AddGeometry(object,
+			           "[g%1d] %s" % (self.geomCounter, basename(file)))
 
     def OnAbout(self, event):
         dlg = wxMessageDialog(self.frame,
@@ -84,6 +91,11 @@ class GeomviewApp(wxApp):
     def GetTarget(self):
 	return self.target
 
+    def SetTarget(self, geom, updateUI=true):
+	self.target = GvPath(self.universe, geom)
+	self.target.thisown = 0
+	if (updateUI): self.treePanel.SelectItem(geom)
+
     def GetCenter(self):
 	return self.center
 
@@ -129,6 +141,7 @@ class GeomviewApp(wxApp):
 	cameraFrame.canvas.SetMgWindow( mgWindow )
 	cameraFrame.canvas.OnSize(0)
         self.cameraFrameList.append(cameraFrame)
+	self.treePanel.AddCamera(gvCamera, "[c0] Camera")
 
 
     def OnInit(self):
@@ -156,7 +169,8 @@ class GeomviewApp(wxApp):
         menuBar.Append(helpMenu,   "&Help")
         self.frame.SetMenuBar(menuBar)
 
-	treePanel = TestTreeCtrlPanel(self.frame)
+	self.treePanel = TestTreeCtrlPanel(self.frame, self)
+
 
         EVT_MENU(self, ID_LOAD,      self.OnLoad)
         EVT_MENU(self, ID_NEWCAMERA, self.OnNewCamera)

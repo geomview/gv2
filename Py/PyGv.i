@@ -18,6 +18,7 @@
 #include "GvMotion.h"
 #include "GvRotateMotion.h"
 #include "GvTranslateMotion.h"
+#include "GvScaleMotion.h"
 #include "GvPath.h"
 %}
 
@@ -57,6 +58,7 @@
 %include "../Common/Gv/GvMotion.i"
 %include "../Common/Gv/GvRotateMotion.i"
 %include "../Common/Gv/GvTranslateMotion.i"
+%include "../Common/Gv/GvScaleMotion.i"
 %include "../Common/Gv/GvPath.i"
 
 %except(python) {
