@@ -3,6 +3,7 @@
 // Geom.i: swig interface for Geom
 //
 
+%nodefault  // tell swig not to generate default constructor
 class Geom
 {
 public:

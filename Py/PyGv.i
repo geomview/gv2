@@ -24,23 +24,23 @@
 
 %typemap(python,argout) double *OutValue {
   PyObject *o;
-  o = PyFloat_FromDouble(*$source);
-  if ((!$target) || ($target == Py_None)) {
-    $target = 0;
+  o = PyFloat_FromDouble(*$1);
+  if ((!$result) || ($result == Py_None)) {
+    $result = 0;
   } else {
-    if (!PyList_Check($target)) {
-	PyObject *o2 = $target;
-	$target = PyList_New(0);
-	PyList_Append($target,o2);
+    if (!PyList_Check($result)) {
+	PyObject *o2 = $result;
+	$result = PyList_New(0);
+	PyList_Append($result,o2);
 	Py_XDECREF(o2);
     }
-    PyList_Append($target, o);
+    PyList_Append($result, o);
     Py_XDECREF(o);
   }
 }
 
 %typemap(python,ignore) double *OutValue(double temp) {
-  $target = &temp;
+  $1 = &temp;
 }
 
 %include "../Common/Geom/Geom.i"
