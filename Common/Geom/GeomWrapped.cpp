@@ -79,7 +79,7 @@ static const short wrap_bits[] = {
 
 int GeomWrapped::Save(char *indent, IoDataStream *s)
 {
-  char *INDENT = (indent != NULL) ? indent : "";
+  const char *INDENT = (indent != NULL) ? indent : "";
   s->PrintF("%sINST", INDENT);
   if (mpName) { s->PrintF("  # %s", mpName); }
   s->PrintF("\n");

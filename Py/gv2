@@ -1,4 +1,6 @@
-#! /usr/local/bin/python2
+#! /usr/bin/python2
+
+# #! /usr/local/bin/python2
 
 from GeomviewApp import GeomviewApp
 import sys

@@ -49,7 +49,7 @@ static const short *list_bits = NULL;
 // Write the List in OOGL format.
 int GeomList::Save(char *indent, IoDataStream *s)
 {
-  char *INDENT = indent ? indent : "";
+  const char *INDENT = indent ? indent : "";
   s->PrintF("%sLIST", INDENT);
   if (mpName) { s->PrintF("  # %s", mpName); }
   s->PrintF("\n");

@@ -1,7 +1,8 @@
-PYTHONINC = /usr/local/include/python2.0
+PYTHONINC = /usr/include/python2.2
+# PYTHONINC = /usr/local/include/python2.0
 CFLAGS = -g
 
-INCLUDES = $(default_includes) -I${PYTHONINC}
+INCLUDES = -I.. $(default_includes) -I${PYTHONINC}
 
 EXTRA_DIST = \
   gv2 gv2.py \
