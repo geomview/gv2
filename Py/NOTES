@@ -1,0 +1,26 @@
+
+design world/camera graph structure
+
+
+work out transformations for old GV style mouse motions:
+	target, center, frame, etc.
+
+
+design motion object & motion list
+
+implement motion with timer & tock() function
+
+inertia:
+    if coords of mouse-up differ from coords of last move,
+    impart some inertia
+
+maybe: when a (inertia?) motion event occurs just
+	create a motion in a list of motions maintained
+	for the current world.  Upon redraw, apply
+	all the motions, possibly taking elapsed or
+	current time into account, then actually redraw.
+
+
+
+
+more parsing: LIST, INST, VECT, perhaps MESH

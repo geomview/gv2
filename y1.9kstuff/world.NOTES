@@ -1,0 +1,37 @@
+
+* Camera inherits from Geom
+
+* GvWorld class abstracts the concept of a document.  It contains:
+
+    GeomList *mpWorld;	// pointer to the "global" root of this
+			// world's heirarchy.  Contains the mpGeom
+			// object (see below), and cameras.
+
+    GvPath mGeometry;	// path to the root of this world's
+			// actual geometry tree
+
+    UtLList<GvPath> mCameras;	// List of paths to all cameras
+				// in this world, relative to mpWorld.
+
+* Cameras should contain a GvPath, indicating the thing they draw
+
+* The position of a camera in the world is completely determined
+  by its path in the world, i.e. by transformations contained by
+  GeomWrapped objects above it.  The transformations stored in the
+  camera itself (C2W, etc) store duplicates of this information, and
+  are updated on each pass through the main draw loop immediately
+  before the camera is used.
+
+* The Draw() method for a camera normally does nothing, unless
+  camera drawing is turned on (a boolean flag stored in the camera),
+  in which case it draws some geometric representation of the camera.
+
+* In the draw sequence (the body of the draw loop):
+
+    For each camera in mCameras
+    {
+	compute the camera's global transformation M;
+	set the camera's transform to M;
+	resolve the camera's GvPath to get the root of a Geom tree
+	use the camera to render that geom tree in the associated window
+    }

@@ -1,0 +1,124 @@
+#! /usr/bin/perl
+
+# usage:     pystructure FILE
+#        or  pystructure < FILE
+#
+#   Reads FILE, which should be a python class implementation file,
+#   for a class definition, and prints a report of the class's
+#   structure, listing attributes (instance variables) and member
+#   functions.
+#
+#   FILE must contain just one python class.
+#
+#   The algorithm is purely lexical: it just scans for strings
+#   matching "self\.[a-zA-Z0-9]+" to find attributes, and for lines
+#   starting with "^\s*def:" to find methods.  Any reference of the
+#   form "self\.[a-zA-Z0-9]+" which is followed by a left paren is
+#   assumed to be a method call, and any methods referenced in that
+#   way which don't also have "^\s*def:" lines are assumed to be
+#   (possibly) inherited methods.
+#
+#   WARNING: This script ignores comments in a simplistic and potentially
+#   dangerous way: any time it encounters a '#', it ignores everything up
+#   to the end of the line, even if the '#' was in a quoted string.
+#
+#   mbp Wed Mar  7 13:34:16 2001
+
+%method_defs = ();
+%method_refs = ();
+%members = ();
+$classdef = "";
+while (<>) {
+
+    s/#.*$//;			# remove comments (naively)
+
+
+    if ( ($class,$superclass) = /^\s*class\s+([a-zA-Z0-9_]+)\(([^\)]*)\):/ ) {
+	if ($classdef) {
+	    output();
+	    %method_defs = ();
+	    %method_refs = ();
+	    %members = ();
+	}
+	$classdef = $_;
+    }
+    if ( ($method,$args) = /^\s*def\s+([a-zA-Z0-9_]+)\(([^\)]*)\):/ ) {
+	$method_defs{$method} = $args;
+    }
+    while ( /self\./ ) {
+	if ( ($x) = /self\.([a-zA-Z0-9_]*)/ ) {
+	    if (/self\.$x\s*\(/) {
+		$method_refs{$x} = 1;
+	    } else {
+		$members{$x} = 1;
+	    }
+	    s/self\.$x//;
+	}
+    }
+}
+output();
+
+sub method_order {
+    my @_methods = ();
+    my @methods = ();
+    my $m;
+    while ($m = shift) {
+	if ($m =~ /^_/) { push(@_methods, $m); }
+	else { push(@methods, $m); }
+    }
+    return ( sort(@_methods), sort(@methods) );
+}
+
+
+sub output {
+
+    # Uses global varibles:
+    #    $classdef
+    #    %method_defs
+    #    %method_refs
+    #    %members
+
+    my @my_methods = ();
+    foreach $method (method_order(keys %method_defs)) {
+	push(@my_methods, $method);
+    }
+
+    my @inherited_methods = ();
+    foreach $method (method_order(keys %method_refs)) {
+	if (!$method_defs{$method}) {
+	    push(@inherited_methods, $method);
+	}
+    }
+
+    my @my_attributes = ();
+    foreach $member (sort keys %members) {
+	if (!$method_defs{$member}) {
+	    push(@my_attributes, $member);
+	}
+    }
+
+    print $classdef;
+
+    if (@my_methods) {
+	print "    Methods:\n";
+	foreach $method (@my_methods) {
+	    print "        $method($method_defs{$method})\n";
+	}
+    }
+
+    if (@inherited_methods) {
+	print "    Possible Inherited Methods:\n";
+	foreach $method (@inherited_methods) {
+	    print "        $method\n";
+	}
+    }
+
+    if (@my_attributes) {
+	print "    Attributes:\n";
+	foreach $member (@my_attributes) {
+	    print "        $member\n";
+	}
+    }
+
+}
+

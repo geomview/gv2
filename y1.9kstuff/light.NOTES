@@ -1,0 +1,133 @@
+MgLight functions related to lists of lights (these functions all use
+the mpNext pointer):
+
+private:
+  Init
+  CopyDataFrom
+  CopyAllFrom
+
+
+public:
+  DeleteList(): deletes a list of lights.  Actually calls "delete"
+		on all the lights in the list, including "this".
+    References:
+
+      Common/Mg/MgLighting.cpp:27:
+	  mpLights->DeleteList();
+	    This is in the MgLighting destructor.
+
+      Common/Mg/MgLighting.cpp:93:
+	  if (mpLights) mpLights->DeleteList();
+	    This is in MgLighting::CopyFrom(); it deletes the current
+	    list of lights from "this" (the MgLighting object) and
+	    calls MgLight::CopyList(MgMerge::F_NEW) to copy the list
+            from the source ("from") MgLighting object.
+
+      Common/Mg/MgLighting.cpp:100:
+	  if (mpLights) mpLights->DeleteList();
+	    This is in MgLighting::DeleteLights(), whose sole purpose
+	    is to nuke the "this" MgLighting object's list of lights,
+	    leaving it with an empty list (mpLights set to NULL)
+
+      Common/Mg/MgLighting.cpp:176:
+	  dst->mpLights->DeleteList();
+            This is in MgLighting::Merge(), and seems to be called
+            to nuke the destination MgLighting object's list of lights
+            prior to giving it a new list, in the case when the
+	    F_REPLACELIGHTS bit is set in the mask.  This could be
+	    replaced with a call to dst->DeleteLights(), I think.
+
+
+  CopyList(mask): Makes a new copy of an entire list of lights;
+                  allocates new MgLight objects for each light in the
+                  list, linking them together in a new list.  Returns
+                  a pointer to this new list.  If the
+                  MgMerge::F_INPLACE bit is set in the mask, copies
+                  the mPrivate and mChanged fields of each light along
+                  with all the other MgLight fields.  Otherwise, sets
+                  these fields to their default values (mPrivate=0,
+                  mChanged=1) in the copies.  In all cases, the
+                  original list, and the lights in it, is left
+                  unaltered.
+
+    References:
+
+      Common/Mg/MgContext.cpp:329:
+
+	  MgLight *oldLights = oldTop->p_mLighting.GetLights();
+	  newTop->p_mLighting.SetLights(
+                                 oldLights->CopyList(MgMerge::F_INPLACE));
+	    This is in PushAppearance(); CopyList() is used to duplicate
+	    the list of lights from the old stack top to the new one.
+	    (Recall that PushAppearance() pushes the stack down a level,
+	    creating a new appearance on the new top of the stack that's
+	    the same as the one that was there.  CopyList() is used
+	    in setting up the list of lights in that appearance's MgLighting
+            object.
+
+
+      Common/Mg/MgLighting.cpp:94:
+	  mpLights = from->mpLights->CopyList(MgMerge::F_NEW);
+	    This is in MgLighting::CopyFrom(); used to copy the lights
+	    list from the "from" object to "this".
+
+      Common/Mg/MgLighting.cpp:210:
+          MgLight *newLights = src->mpLights->CopyList(MgMerge::F_INPLACE);
+	    In MgLighting::Merge(); used to append a copy of "src"s
+	    list of lights to the list for "this".
+
+
+  SetNextLight(): Sets the "mpNext" pointer for an MgLight object.
+
+    Common/Mg/MgLighting.cpp:119:
+        l->GetNextLight()->SetNextLight(l->GetNextLight()->GetNextLight());
+	  This is in MgLighting::RemoveLight(); it's removing a single
+	  light from the list.
+
+    Common/Mg/MgLighting.cpp:136:
+        l->SetNextLight(light);
+	  This is in MgLighting::AppendLight(); used to append an MgLight
+	  to the end of the list.
+
+
+
+  GetNextLight:
+    Common/Mg/MgContext.cpp:680:
+        for(lt = lights; lt != NULL; lt = lt->GetNextLight()) {
+          In MgContext::GlobalLights(); loops through the lights
+	  in a list, doing something with each one.
+
+    Common/Mg/MgLighting.cpp:111,115,117,119
+        mpLights = mpLights->GetNextLight();
+        for( l=mpLights; l->GetNextLight(); l=l->GetNextLight() ) 
+        if (l->GetNextLight() == light)  
+        l->GetNextLight()->SetNextLight(l->GetNextLight()->GetNextLight());
+	  In MgLighting::RemoveLight().
+
+    Common/Mg/MgLighting.cpp:133:
+        for( l=mpLights; l->GetNextLight(); l=l->GetNextLight() )
+	  In MgLighting::AppendLight().
+
+    Common/Mg/MgLighting.cpp:293:
+        for (MgLight *light = mpLights;
+	     light!=NULL;
+	     light = light->GetNextLight())
+          In MgLighting::SaveProcessMore(); used to loop over the lights
+	  in the list, writing them to a file.
+
+    Common/Mg/MgOpenGlContext.cpp:558:
+        for(l = mAStk.top()->p_mLighting.GetLights();
+	    l != NULL;
+	    l = l->GetNextLight())
+          In MgOpenGlContext::InitWin(); marks all lights as having changed,
+	  so they'll get transmitted to the new gl window at the right time.
+
+    Common/Mg/MgOpenGlContextShade.cpp:239:
+        light = light->GetNextLight();
+	  In MgOpenGlContext::Lights(); loops through all the lights in
+	  the list, making the relevant GL calls to account for ones
+	  that have changed.
+
+
+
+

@@ -1,0 +1,164 @@
+Microsoft Developer Studio Workspace File, Format Version 5.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "Bases"=.\Common\Bases\Bases.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Geom"=.\Common\Geom\Geom.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Geometry"=.\Common\Geometry\Geometry.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Gv"=.\Common\Gv\Gv.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Io"=.\Common\Io\Io.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Mg"=.\Common\Mg\Mg.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MsGv"=.\Ms\MsGv\MsGv.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Bases
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Geom
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Geometry
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Gv
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Io
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Mg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Ut
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Test"=.\Test\Test.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Bases
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Geom
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Geometry
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Io
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Mg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Ut
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Ut"=.\Common\Ut\Ut.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

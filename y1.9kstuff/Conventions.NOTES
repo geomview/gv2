@@ -1,0 +1,85 @@
+Naming conventions:
+
+NOTE:
+  By "CamelCase" we mean that the first letter of each word in a name
+  is uppercase (including the first word); other letters are
+  lowercase; no underscores.  For example: GeomInst.  (in a previous
+  version of this document I used the term "standard UC Convention"
+  instead of "CamelCase".)
+
+
+class, struct, and typedef names:
+	* use CamelCase
+	* first word is a prefix indicating which library (subproject)
+	  the class is in.  For example, GeomInst is part of the "Geom"
+	  library.
+	* Exceptions to this rule: Geometry, Bases
+
+member function names:
+	* use CamelCase
+
+non-member function names (function that aren't part of a class):
+	* same naming convention as for member functions
+	* when referring to these, always use a "::" prefix
+	* the "::" prefix also applies to system library functions,
+	  like ::printf() or ::cos(), etc.
+
+member variables:
+	name like
+		(p_)?(m|s)(p)?XxxXxx
+	where
+		p_     prefix appears iff it's a public member variable
+		       (but avoid public member variables, so in practice
+		       this doesn't occurr often, if at all)
+		(m|s)  use m if the variable is not static, s if static
+		p      append a 'p' after the m or s if it's a pointer type
+		XxxXxx the rest of the name uses CamelCase
+
+	Note:  this implies that all member variables start with
+		a lowercase letter.
+
+
+non-member variables:
+	global:		DON'T USE
+	file static:	no convention
+	automatic:	no convention
+
+macros:  (use very sparingly!)
+	* ALL_UPPERCASE_WITH_UNDERSCORES, except:
+	* use the prefix from the library it's defined in
+
+enum names:
+	* capitalize like macros
+	* put typedef enums only in class definitions
+	* always refer to enum values with the
+		ClassName::
+	  prefix
+	
+Formatting conventions:
+	* 4-space indentations
+	* use spaces not tabs
+	* vertically align matching braces, each brace on its own line, e.g.
+		for (...)
+		{
+		    ...
+		}
+
+Other conventions:
+
+1. avoid typedefs outside of class definitions
+2. header (.h) files should include only those other .h files that are
+   REALLY necessary.  To allow this, always use the "class" prefix
+   in the declaration of a pointer to a class object (in function
+   prototypes and member variable declarations) in .h files.
+3. .h files should not require any other .h files before them
+   (To insure this, always include YOUR .h file first in your .cpp
+   file; that way, your .cpp file won't compile if your .h file
+   requires another before it.)
+4. Use internal multiple-inclusion protection in .h files (with #ifdef's)
+
+5. Avoid use of friends, except in situations where two classes need
+   to be tightly coupled, for example a container class and its iterator
+   class.
+
+========================================================================
+

@@ -1,0 +1,167 @@
+{
+INST
+transform
+.5 0 0 0
+0 .5 0 0
+0 0 .5 0
+0 0 0 1
+geom
+
+{ LIST				# body assembly (root)
+
+   { INST			# torso movable
+     transform
+	1 0 0 0
+	0 1 0 0
+	0 0 1 0
+	0 0 0 1
+     geom { 		# torso prim
+	OFF
+	4 1 0
+	  0 0 0
+	  0 2 0
+	  0 2 0.21
+	  0 0 0.21
+	4 0 1 2 3
+	  }
+   }
+
+   { INST			# L arm movable
+     transform
+	1 0 0 0
+	0 1 0 0
+	0 0 1 0
+	0 0 0 1
+     geom {			# L arm prim
+	OFF
+	4 1 0
+	 -2 1 0
+	  0 2 0
+	  0 2 0.21
+	 -2 1 0.21
+	4 0 1 2 3
+	  }
+   }
+
+   { INST		        # R arm movable
+     transform
+	1 0 0 0
+	0 1 0 0
+	0 0 1 0
+	0 0 0 1
+     geom {			# R arm prim
+	OFF
+	4 1 0
+	  2 1 0
+	  0 2 0
+	  0 2 0.21
+	  2 1 0.21
+	4 0 1 2 3
+	  }
+   }
+
+   { INST			# L leg assembly movable
+     transform
+	1 0 0 0
+	0 1 0 0
+	0 0 1 0
+	0 0 0 1
+     geom { LIST		# L leg assembly
+            {			#   L leg prim
+	OFF
+	4 1 0
+	 -1 -2 0
+	  0  0 0
+	  0  0 0.21
+	 -1 -2 0.21
+	4 0 1 2 3
+	    }
+            { INST		#   L foot movable
+              transform
+		.8 .2 0 0
+		.2 .8 0 0
+		0 0 1 0
+		0 0 0 1
+              geom {		#   L foot prim
+	OFF
+	4 1 0
+	  -2 -2 0
+	  -1 -2 0
+	  -1 -2 0.21
+	  -2 -2 0.21
+	4 0 1 2 3
+		   }
+            }
+          }
+   }
+
+
+   { INST			# R leg assembly movable
+     transform
+	1 0 0 0
+	0 1 0 0
+	0 0 1 0
+	0 0 0 1
+     geom { LIST		# R leg assembly
+            {			#   R leg prim
+	OFF
+	4 1 0
+	  1 -2 0
+	  0  0 0
+	  0  0 0.21
+	  1 -2 0.21
+	4 0 1 2 3
+	    }
+            { INST		#   R foot movable
+              transform
+		1 0 0 0
+		0 1 0 0
+		0 0 1 0
+		0 0 0 1
+              geom {		#   R foot prim
+	OFF
+	4 1 0
+	   2 -2 0
+	   1 -2 0
+	   1 -2 0.21
+	   2 -2 0.21
+	4 0 1 2 3
+		   }
+            }
+          }
+   }
+
+########################################################################
+ { LIST		# neck assembly
+             { 			#   neck prim
+ 	OFF
+ 	4 1 0
+ 	  0 2 0
+ 	  0 3 0
+ 	  0 3 0.21
+ 	  0 2 0.21
+ 	4 0 1 2 3
+ 	    }
+             { INST		#   neck movable
+ 	      transform
+ 		1 0 0 0
+ 		0 1 0 0
+ 		0 0 1 0
+ 		0 0 0 1
+ 	      geom {		#   head prim
+ 	OFF
+	4 1 0
+	 -.5 3 0.105
+	 -.5 4 0.105
+	  .5 4 0.105
+	  .5 3 0.105
+ 	4 0 1 2 3
+ }
+ }
+ }
+########################################################################
+
+
+
+}
+}

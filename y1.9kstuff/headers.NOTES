@@ -1,0 +1,80 @@
+Bases
+	RefObject.h
+	StorageObject.h
+	TypeObject.h
+
+Geom
+	Geom.h
+	GeomBezier.h
+	GeomComment.h
+	GeomHandle.h
+	GeomList.h
+	GeomMesh.h
+	GeomOff.h
+	GeomOldOoglParser.h
+	GeomQuad.h
+	GeomSkel.h
+	GeomVect.h
+	GeomWrapped.h
+
+Geometry
+	Geometry.h
+	Point3.h
+	HPoint3.h
+	Transform3.h
+
+Gv
+	GvCamera.h
+	GvEvent.h
+	GvPath.h
+	GvWorld.h
+
+Io
+	IoDataStream.h
+	IoOldOoglLexer.h
+	IoOldOoglToken.h
+
+Mg
+	GlHeaders.h
+	MgAppearance.h
+	MgCamera.h
+	MgColor.h
+	MgContext.h
+	MgLight.h
+	MgLighting.h
+	MgMaterial.h
+	MgMerge.h
+	MgOpenGlContext.h
+	MgOpenGlContextShade.h
+	MgProperty.h
+	MgTexture.h
+	MgWindow.h
+
+MsUi
+	AppearanceDlg.h
+	ColorButton.h
+	DebugDlg.h
+	MgColorChoice.h
+	MgColorDialog.h
+	MgColorSlider.h
+	MgColorWindow.h
+	OkMessageDlg.h
+	resource.h
+	TreeDlg.h
+
+MsUt
+	StdAfx.h
+
+Ut
+	ooglutil.h
+	UtException.h
+	UtLList.h
+	UtLStack.h
+	UtLVec.h
+	UtMath.h
+	UtScalarArray.h
+	UtString.h
+	UtUArray.h
+	UtVArray.h
+	UtVRefPtrArray.h
+	UtVVec.h

@@ -1,0 +1,104 @@
+void MgOpenGlContext::Appearance( AppearanceStackNode *ma, int mask )
+
+  calls:
+    NONE
+    only uses ma to access that node's info
+
+  called by:
+
+    MgOpenGlContext::PopAppearance():
+      MgOpenGlContext::Appearance(mastk_next, mastk_next->p_mAp.GetValid());
+    MgOpenGlContext::SetAppearance():
+      MgOpenGlContext::Appearance( mastk, changed );
+
+------------------------------------------------------------------------
+
+void MgOpenGlContext::Material(AppearanceStackNode *astk, int mask)
+  calls:
+    NONE
+    only uses astk to access that node's info
+
+  called by:
+    MgOpenGlContext::SetAppearance():
+      MgOpenGlContext::Material( mastk, mat_changed );
+
+------------------------------------------------------------------------
+
+int MgOpenGlContext::LightDef( int lightno, MgLight *light,
+	                       MgLighting *lgt, int mask)
+  calls:
+    NONE
+
+  called by:
+    MgOpenGlContext::Lights():
+      MgOpenGlContext::LightDef(GL_LIGHT0+lightsused, light,
+	                        li, li->GetValid());
+
+------------------------------------------------------------------------
+
+void MgOpenGlContext::Lighting(AppearanceStackNode *astk, int mask)
+  calls:
+    MgOpenGlContext::LightModelDef( astk->p_mLightSeq,
+	                            li, li->GetValid(mask), astk );
+    MgOpenGlContext::Lights( li->GetLightList(), astk);
+
+    only uses astk to access that node's info, and to pass
+      to LightModelDef() and Lights()
+
+  called by:
+    MgOpenGlContext::PopAppearance():
+      MgOpenGlContext::Lighting(mastk_next,
+	                        mastk_next->p_mLighting.GetValid());
+    MgOpenGlContext::SetAppearance():
+      MgOpenGlContext::Lighting( mastk, lng_changed );
+
+------------------------------------------------------------------------
+
+int MgOpenGlContext::LightModelDef(int lightmodel, MgLighting *lgt,
+                                   int mask, AppearanceStackNode *astk)
+  calls:
+    NONE
+    only uses astk to access that node's info
+
+  called by:
+    MgOpenGlContext::Lighting():
+       MgOpenGlContext::LightModelDef( node->p_mLightSeq, li,
+                                       li->GetValid(mask), astk );
+
+------------------------------------------------------------------------
+
+void MgOpenGlContext::Lights( MgLightList *lightList,
+                              AppearanceStackNode *astk)
+  calls:
+    MgOpenGlContext::LightDef(GL_LIGHT0+lightsused,
+	                      light, li, li->GetValid());
+    only uses astk to access that node's info
+    calls Depth() on mAStk (but not on astk)
+
+  called by:
+    MgOpenGlContext::Lighting():
+      MgOpenGlContext::Lights( li->GetLightList(), astk);
+    MgOpenGlContext::WorldBegin():
+      MgOpenGlContext::Lights(mAStk.Top()->p_mLighting.GetLightList(),
+                              mAStk.Top());
+
+------------------------------------------------------------------------
+
+========================================================================
+
+New call syntaxes:
+void MgOpenGlContext::Appearance( MgAppearanceStackNode *node, int mask )
+void MgOpenGlContext::Material(MgAppearanceStackNode *node, int mask)
+
+int MgOpenGlContext::LightDef( int lightno, MgLight *light,
+	                       MgLighting *lgt, int mask)
+
+
+void MgOpenGlContext::Lighting(MgAppearanceStackNode *node, int mask)
+
+int MgOpenGlContext::LightModelDef(int lightmodel, MgLighting *lgt,
+                                   int mask, MgAppearanceStackNode *node)
+
+
+void MgOpenGlContext::Lights( MgLightList *lightList,
+                              MgAppearanceStackNode *node)

@@ -1,0 +1,25 @@
+MgMaterial * MgMaterial::Merge(MgMaterial *src, int mergeflags)
+
+    Merge MgMaterial values from src into "this", controlled by
+    mergedflags.  If F_INPLACE bit is set in mergeflags, changes are
+    made in "this" itself.  Otherwise a copy of "this" is made, the
+    changes are merged into the copy, and a pointer to the copy is
+    returned.  Unless there are no changes to make, in which case we
+    just return a new reference to "this".  Thus, in all cases, the
+    caller should ::DeleteRef() the returned pointer when finished
+    with it.
+
+------------------------------------------------------------------------
+
+MgLighting * MgLighting::Merge(MgMaterial *src, int mergeflags)
+
+    Same behavior as MgMaterial::Merge(), with the following
+    difference:  In the case when NOT doing an INPLACE merge,
+    the CopyFrom() function that is called to duplicate
+    "this" object in the process of creating new one to merge
+    into, does not reset the values of the mChanged and mPrivate
+    fields.  It copies them along with the other fields.
+
+------------------------------------------------------------------------
+
+	

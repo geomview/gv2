@@ -1,0 +1,8 @@
+Makefile
+Makefile.in
+*.pyc
+PyGv_wrap.cpp
+PyGv.py
+loadtest
+*.log
+*.dvi

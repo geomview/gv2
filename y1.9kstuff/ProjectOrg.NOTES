@@ -1,0 +1,71 @@
+Bases
+	RefObject
+	StorageObject
+
+Io
+	OoglLexer
+	OoglToken
+	MgStream
+
+Geometry
+	Transform3
+	Point3
+	HPoint3
+
+MsAp
+	CMDITestApp
+	CMDITestDoc
+	MgMDIWindow
+	UtilityWindow
+	CMDITestView
+
+MsUi
+	AppearanceDlg
+	MgColorDialog
+	MgColorChoice
+	ColorButton
+	MgColorWindow
+	MgColorSlider
+	MgMSThread
+Ut
+	Exception
+	LStack
+	LList
+	LListIter
+	LVec
+	UArray
+	VArray
+	VRefPtrArray
+	VVec
+
+Geom
+	List
+	WrappedGeom
+	Skel
+	Bezier
+	GeomHandle
+	Off
+	Mesh
+	Inst
+	Comment
+	Wrapped
+	Quad
+	Vect
+	OoglParser
+
+Mg
+	MgContext
+		MgOpenGlContext
+	MgProperty
+		MgAppearance
+		MgLighting
+		MgTexture
+		MgMaterial
+		MgLight
+	MgWindow
+		MgMsOpenGlWindow
+	MgCamera
+	MgMerge
+	MgRGB
+		MgColor
+		MgColorA

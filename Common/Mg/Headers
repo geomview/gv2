@@ -1,0 +1,15 @@
+MgAppearance.h
+MgAppearanceStack.h
+MgCamera.h
+MgColor.h
+MgContext.h
+MgLight.h
+MgLightList.h
+MgLighting.h
+MgMaterial.h
+MgOpenGlContext.h
+MgOpenGlContextShade.h
+MgProperty.h
+MgTexture.h
+MgWindow.h
+ooglutil.h

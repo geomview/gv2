@@ -1,0 +1,296 @@
+Global application-related classes
+
+
+    search for "Remove?" to find notes about things that probably
+    can be taken out.
+
+------------------------------------------------------------------------
+
+Ms-Specific:
+
+ (* = documented below)
+
+	AppWizard-generated classes:
+  *	    CMsGvApp
+  *	    CMsGvDoc
+  *	    CMsGvView
+
+	    CMainFrame
+	    CAboutDlg
+	    CChildFrm
+
+  *	MsGvThread
+
+  *	EventHandler
+
+	Gui classes:
+	    AppearanceDlg
+	    ColorButton
+	    DebugDlg
+	    MgColorChoice
+	    MgColorDialog
+	    MgColorSlider
+	    MsMgOpenGlWindow
+	    OkMessageDlg
+	    TreeDlg
+
+------------------------------------------------------------------------
+
+CMsGvApp
+	The application.   This gets instantiated exactly once and causes
+	the program to run.
+
+	private:
+	    BOOL OnIdle(LONG lCount);
+		Called whenever the application doesn't have anything
+		else to do (i.e. no events to process).  We used to
+		have code in this procedure to update all the views,
+		which caused the program to continuously redraw, even
+		when nothing is moving. Currently this procedure
+		doesn't do anything other than call CWinApp::OnIdle(),
+		but we may need to add something back when we
+		implement inertia (& other animation).
+	public:
+	    CMsGvApp();
+		Class constructor.  Put variable initialization & etc
+		goes here, but all significant initialization goes
+		in InitInstance().
+	    ~CMsGvApp();
+		Destructor.  Put all significant application cleanup
+		code in ExitInstance().
+	    virtual int ExitInstance();
+		Called immediately before the application exits.  Put
+		cleanup code here.
+	    virtual BOOL InitInstance();
+		Called immediately after the application starts.  Put
+		initialization code here.
+	    afx_msg void OnAppAbout();
+	    afx_msg void OnPropertiesAppearance();
+	    afx_msg void OnPropertiesColor();
+	    afx_msg void OnPropertiesDoit();
+	    afx_msg void OnPropertiesTree();
+		These are all event-handlers; they specify what should
+		happen in response to various user interface events.
+	private:
+	    AppearanceDlg *mpAppearanceDlg;
+		Pointer to the program's global AppearanceDlg object.
+
+
+CMsGvDoc
+	The document class.  There's one of these for each "world".
+
+	protected:
+	    CMsGvDoc();
+		Class constructor.  Adds the document to the global
+		list of all documents.
+		Note that this constructor is protected.  I'm not
+		quite sure why, but presumably this is part of the way
+		the framework works.
+	public:
+	    Transform3 *GetWorldTransform()
+		Return a pointer to this world's world transform.
+		Used by the user interface for rotations.  This procedure
+		should go away when we generalize to allowing the user
+		interface to operate at an arbitrary level in the world;
+		it'll be replaced with some sort of "current object"
+		concept.  
+		[ Idea: have the current object be known only to the
+		  user interface --- although perhaps a
+		  system-independent version of it.  The UI would store
+		  it as a path.  Then when it's time to perform an
+		  operation (rotation, etc), it can call
+		  GetLocalTransform() on the path to figure out what
+		  transform to act on. ]
+	    void UpdateAll();
+		Calls CMsGvView::UpdateScene() for each of this document's
+		views.
+	    void DrawScene(MgContext *mg);
+		Draws the view by calling
+		    mg->WorldBegin();
+		    mWorld.Draw(mg);
+		    mg->WorldEnd();
+		Also does some timing computations.
+	    virtual void DeleteContents();
+	    virtual BOOL OnNewDocument();
+		Called by the framework as part of the "File New" menu
+		command.  The framework first calls DeleteContents(),
+		which should delete the contents of the existing document,
+		and then it calls OnNewDocument(), which should initialize
+		the (existing, newly cleared via DeleteContents()) document
+		object.  But I'm not sure "File New" makes sense for
+		Geomview, since it's a viewer, not an editor. (???)
+	    virtual BOOL OnOpenDocument(LPCTSTR lpszPathName);
+		Called by the framework in response to the "File Open"
+		command.  Overridden because we're not using the builtin
+		MFC serialization stuff (because I don't understand it).
+	    virtual ~CMsGvDoc();
+		Class destructor.  Removes the document from the global
+		list of all documents.
+
+	private:
+	    GvWorld            mWorld;
+		This document's GvWorld object.
+	public:
+	    unsigned long      p_mOldTime,
+			       p_mCurTime,
+			       p_mElapsedTime,
+			       p_mDrawTime;
+	    double             p_mFramesPerSecond;
+	    int                p_mFrameCount;
+		Misc timing information.
+
+
+CMsGvView
+	The view class.  One of these for each window.
+
+	protected:
+	    CMsGvView();
+		Class constructor.  Note that it's protected.
+		Comment says "create from serialization only".
+	    virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
+	    virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);
+	    virtual void OnEndPrinting(CDC* pDC, CPrintInfo* pInfo);
+		Things related to printing; not used at the moment.
+	    afx_msg void OnSize(UINT nType, int cx, int cy);
+		Called by the framework whenever the window's size
+		changes (because the user resized it, e.g.). Calls the
+		parent class's OnSize().
+		Then call's the "win's" MoveWindow() function;
+		not sure why this is necessary.
+	    afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
+		Called by the framework immediately after the Windows
+		window has been created (but before it is made visible).
+		#if MULTITHREADED
+		   Creates the view's thread and calls its CreateThread()
+		   function
+		#else
+		   Creates the view's MgMSOpenGlWindow object ("win")
+		   and calls its SetupWindow() function.
+		#endi
+	    afx_msg void OnDestroy();
+		Called by the framework when the window is destroyed.
+		#if MULTITHREADED
+		  Shuts down the window's thread.
+		#endif
+		Then calls CView::OnDestroy().
+	public:
+	    virtual      ~CMsGvView();
+		Destructor.  Calls the document's RemoveView() procedure
+		to remove itself from the document's list of views.
+	    CMsGvDoc*    GetDocument();
+		Return a pointer to the view's document.
+	    virtual void OnDraw(CDC* pDC);
+		Simply calls UpdateScene().
+	    virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+		More confusing framework-handled window initialization
+		stuff here.
+	    void         UpdateScene();
+		#if MULTITHREADED
+		    Sends a "paint" message to the thread.
+		#else
+		    Calls the win's UpdateScene() method.
+                #endif
+		Also updates the timing numbers displayed in the
+		window's title bar.
+
+	protected:
+	    MgMSThread *       mpThread;
+	private:
+	    MgMSOpenGlWindow * mpWin;
+	    BOOL               mWindowInitialized;
+	    unsigned long      mLastTextUpdate;
+	    ViewEventHandler   mEventHandler;
+
+------------------------------------------------------------------------
+
+MsGvThread
+	protected:
+	    MgMSThread();
+		Protected constructor used by dynamic creation
+	public:
+	    MgMSThread(CMsGvView *View);
+		Public constructor used by CMsGvView::OnCreate() when
+		it creates the thread corresponding to a view.
+	    virtual ~MgMSThread();
+		Class destructor.
+	    BOOL IsPainting()
+		Return TRUE iff the thread is currently painting.
+	    virtual BOOL InitInstance();
+		Initializes the thread --- sets up its relationship
+		with the corresponding CMsGvView object, and initializes
+		that object.  Does the Gl window setup stuff.
+	    virtual int  ExitInstance();
+		For any per-thread cleanup; currently none, but we may
+		need some in the future.
+	    virtual BOOL OnIdle(LONG lCount);
+		Currently does nothing, but we may add something here
+		in the future.
+	    afx_msg void Paint(UINT param1, LONG param2);
+		This is what gets called in response to the MST_PAINT
+		message, I think.  It calls the mpWin's UpdateScene()
+		method.
+	    afx_msg void Quit(UINT param1, LONG param2);
+		This is what gets called in response to the MST_QUIT
+		message, I think.  It calls AfxEndThread(0).
+
+
+	protected:
+	    MgMSOpenGlWindow * mpWin;
+	    CMsGvView *        mpView;
+	    BOOL               mPainting;
+	public:
+	    int                mPaintCount;
+
+
+------------------------------------------------------------------------
+
+EventHandler
+	Inherits from GvEventHandler, which is the generic
+	event handler base class.
+
+	The MsOpenGlWindow object creates and stores a pointer to
+        an EventHandler object; its WindowProc() dispatches the event
+	to the EventHandler object.
+
+	Think about renmaing this (EventHandler) class to something
+	like "MsGvEventHanlder", to convey the fact that it's more
+	specific than GvEventHandler.
+
+	More thoughts on event handling:
+
+	  Eventually we want to support run-time event binding,
+	  which John says would be done by using a more
+	  sophisticated class derived from GvEventHandler --- one
+	  that can be programmed at run-time.  That class would
+	  presumably serve the function that the current
+	  "EventHandler" class serves.  This is the class I'm
+	  proposing to rename "MsGvEventHandler", but the code for
+	  allowing run-time event bindings would be largely
+	  system-specific, so the class that it goes in shouldn't
+	  be named starting with "Ms".
+
+	  So think about a better name for this class.
+
+	  Ideally, I'd think that "GvEventHandler" would be a good
+	  name, since in general we're using the "Gv" prefix for
+	  system-indendent high-level classes, but unfortunately
+	  this name is already used by the base class.  So maybe
+	  we should rename GvEvent and GvEventHandler to something
+	  more fundamental, like just Event and EventHandler, so
+	  we can use the name GvEventHandler for the class that
+	  actually does the Gv-specific work.
+
+	  Or could we just eliminate this two-step event-handler
+	  class heirarchy altogether, and have a single class
+	  called GvEventHandler?
+
+	  Also, there seems to be a bit of inefficiency in the way
+	  events are handled: MsMgOpenGlWindow::WindowProc() uses a
+	  big switch statement to build the a generic GvEvent object,
+	  passing it to GvEventHandler::HandleEvent(), which is also
+	  just a big switch statement which calls a different
+	  procedure for each event type.  It would seem to be more
+	  direct to just have MsMgOpenGlWindow::WindowProc() call the
+	  individual event-type-specific procedures in the first
+	  place.  ???
+

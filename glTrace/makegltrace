@@ -1,0 +1,197 @@
+#! /usr/bin/perl
+
+$glheader = "/usr/include/GL/gl.h";
+
+@funcs = ();
+%types = {};
+open(IN, "<$glheader");
+while (<IN>) {
+    if (/GLAPI/ && !/define\s+GLAPI/) {
+	$proto = $_;
+	if (!/\);/) {
+	    do {
+		$_ = <IN>;
+		$proto .= $_;
+	    } until /\);/;
+	}
+	process_prototype_line( $proto );
+    }
+}
+close(IN);
+
+#foreach $f (@funcs) {
+#    print "Name: " . $f->{'name'} . "\n";
+#    print "Type: " . $f->{'type'} . "\n";
+#    foreach $a (@{$f->{'args'}}) {
+#	printf "Arg: %20s    %s\n", $a->[0], $a->[1];
+#    }
+#    print "\n";
+#}
+
+open(PROTOS, ">glTraceProtos.h");
+open(TMACROS, ">glTraceMacros.h");
+open(NOTMACROS, ">glNoTraceMacros.h");
+
+print PROTOS qq|#include <GL/gl.h>\n\n|;
+
+print PROTOS <<EOF
+#ifdef __cplusplus
+extern "C" {
+#endif
+EOF
+;
+
+foreach $f (@funcs) {
+    my $name = $f->{'name'};
+    my $type = $f->{'type'};
+
+    $types{$type} = 1;
+
+    my @args = ();
+    foreach $a (@{$f->{'args'}}) {
+	my $atype = $a->[0];
+	$types{$atype} = 1;
+	my $aname = $a->[1];
+	push(@args, "$atype $aname");
+    }
+    if (@args) {
+	$args = join(", ", @args);
+    } else {
+	$args = "void";
+    }
+
+    print PROTOS "$type trace_$name ( $args );\n";
+    print TMACROS qq|#define $name( ARGS ) do { printf("%s[%1d]:\\n", __FILE__, __LINE__); trace_$name ARGS ; } while (0)\n|;
+
+    print NOTMACROS qq|#define $name( ARGS ) $name ARGS\n|;
+
+}
+print PROTOS <<EOF
+#ifdef __cplusplus
+}
+#endif
+EOF
+;
+
+close(PROTOS);
+close(TMACROS);
+close(NOTMACROS);
+
+open(OUT, ">glTrace.c");
+print OUT qq|#include "glTraceProtos.h"\n\n|;
+foreach $f (@funcs) {
+    my $name = $f->{'name'};
+    my $type = $f->{'type'};
+
+    $types{$type} = 1;
+
+
+    my @args = ();
+    my @argnames = ();
+    foreach $a (@{$f->{'args'}}) {
+	my $atype = $a->[0];
+	$types{$atype} = 1;
+	my $aname = $a->[1];
+	push(@args, "$atype $aname");
+	push(@argnames, "$aname");
+    }
+    if (@args) {
+	$args = join(", ", @args);
+	$argnames = join(", ", @argnames);
+    } else {
+	$args = "void";
+	$argnames = "";
+    }
+
+
+    print(OUT "$type trace_$name( $args ) {\n");
+    print(OUT qq|  printf("%20s(", "$name");\n|);
+    my $firstarg = 1;
+    $nl = "";
+    foreach $a (@{$f->{'args'}}) {
+	if ($firstarg) {
+	    $firstarg = 0;
+	} else {
+	    print(OUT qq|  printf("$nl%20s ", "");\n|);
+	}
+	my $atype = $a->[0];
+	my $aname = $a->[1];
+	my $format = printformat($atype);
+	print(OUT qq|  printf("%10s = $format", \"$aname\", $aname);\n|);
+	$nl = "\\n";
+    }
+    print(OUT qq|  printf(");\\n");\n|);
+
+    print OUT "  ";
+    if (($type ne "void") && ($type ne "GLvoid")) { print OUT "return "; }
+    print OUT "$name ( $argnames );\n";
+
+
+    print(OUT qq|}\n|);
+    print OUT "\n\n";
+}
+close(OUT);
+
+
+
+sub trim {
+    my $s = shift;
+    $s =~ s/^\s+//;
+    $s =~ s/\s+$//;
+    return $s;
+}
+
+
+sub process_prototype_line {
+    my $proto = shift;
+
+    $proto =~ s/\n//mg;
+    $proto = trim($proto);
+
+    if ( ($type, $name, $args) =
+	 ($proto =~ m/GLAPI\s+(\S+)\s+GLAPIENTRY\s+(\S+)\((.*)\);/) ) {
+
+	if ($name =~ /EXT$/) { next; }
+	if ($name =~ /MESA$/) { next; }
+	if ($name =~ /SGIS$/) { next; }
+
+	$args = trim($args);
+	my @args = ();
+	if ($args ne "void") {
+	    @argstrings = split(/\s*,\s*/, $args);
+	    foreach $as (@argstrings) {
+		for ($i=length($as); $i>=0; --$i) {
+		    if (substr($as, $i, 1) =~ /[ \*]/) { last; }
+		}
+		$atype = trim(substr($as, 0, $i+1));
+		$aname = trim(substr($as, $i+1));
+		push(@args, [$atype, $aname]);
+	    }
+	}
+	push(@funcs, { name => $name,
+		       type => $type,
+		       args => \@args});
+    } else {
+	print "BAD proto: $proto\n";
+    }
+}
+
+sub printformat {
+    my $type = shift;
+    if ($type =~ /\*/)         { return "0X%x"; }
+    if ($type =~ /GLbitfield/) { return "0X%x"; }
+    if ($type =~ /GLboolean /) { return "%d"; }
+    if ($type =~ /GLbyte /)    { return "0X%x"; }
+    if ($type =~ /GLclampd/)   { return "%d"; }
+    if ($type =~ /GLclampf/)   { return "%f"; }
+    if ($type =~ /GLdouble/)   { return "%f"; }
+    if ($type =~ /GLenum/)     { return "%d"; }
+    if ($type =~ /GLfloat/)    { return "%f"; }
+    if ($type =~ /GLint/)      { return "%d"; }
+    if ($type =~ /GLshort/)    { return "%d"; }
+    if ($type =~ /GLsizei/)    { return "%d"; }
+    if ($type =~ /GLubyte /)   { return "%u"; }
+    if ($type =~ /GLuint /)    { return "%u"; }
+    if ($type =~ /GLushort /)  { return "%u"; }
+    return "0X%x";
+}

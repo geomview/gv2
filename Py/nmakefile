@@ -1,0 +1,66 @@
+
+# Makefile for building a Python extension
+
+WRAPFILE      = PyGv_wrap.cpp
+
+# Location of the Visual C++ tools (32 bit assumed)
+
+TOOLS	      = c:\progra~1\micros~1\vc98
+TARGET	      = example.dll
+CC	      = $(TOOLS)\bin\cl.exe
+LINK	      = $(TOOLS)\bin\link.exe
+INCLUDE32     = -I$(TOOLS)\include
+MACHINE	      = IX86
+
+# C Library needed to build a DLL
+
+DLLIBC	      = msvcrt.lib oldnames.lib	 
+
+# Windows libraries that are apparently needed
+WINLIB	      = kernel32.lib advapi32.lib user32.lib gdi32.lib comdlg32.lib  winspool.lib
+
+# Libraries common to all DLLs
+SYSTEM_LIBS	     = $(DLLIBC) $(WINLIB) 
+
+# Linker options
+LOPT	  = -debug:full -debugtype:cv /NODEFAULTLIB /RELEASE /NOLOGO \
+	     /MACHINE:$(MACHINE) -entry:_DllMainCRTStartup@12 -dll
+
+# C compiler flags
+
+CFLAGS	      = /Z7 /Od /c /nologo
+PY_INCLUDE    = -Ic:\python20\include
+PY_LIB	      = c:\python20\libs\python20.lib
+PY_FLAGS = /D__WIN32__
+
+OOGL_INCLUDE = -I..\glTrace -I..\Common\Gv -I..\Common\Io -I..\Common\Bases -I..\Common\Ut -I..\Common\Mg -I..\Common\Geom -I..\Common\Geometry
+
+INCLUDE = $(INCLUDE32) $(PY_INCLUDE) $(OOGL_INCLUDE)
+
+OOGL_LIBS = ..\Common\Debug\Common.lib
+
+OTHER_LIBS = \
+	kernel32.lib \
+	user32.lib \
+	gdi32.lib \
+	winspool.lib \
+	comdlg32.lib \
+	advapi32.lib \
+	shell32.lib \
+	ole32.lib \
+	oleaut32.lib \
+	uuid.lib \
+	odbc32.lib \
+	odbccp32.lib
+
+LIBS = $(PY_LIB) $(OOGL_LIBS) opengl32.lib glu32.lib $(SYSTEM_LIBS)
+
+python::
+	$(CC) $(CFLAGS) $(PY_FLAGS) $(INCLUDE) $(WRAPFILE)
+	set LIB=$(TOOLS)\lib
+	$(LINK) $(LOPT) -out:PyGvc.dll $(LIBS) $(PY_LIB) PyGv_wrap.obj
+
+
+
+#	swig -python -o $(WRAPFILE) $(INTERFACE)
+

@@ -1,0 +1,75 @@
+This is the Geomview 2.0 source tree.  The program is not generally
+useful yet and is completely undocumented.  It has not been released
+yet, not even an alpha version.  This source tree is intended for
+developers only.  If you have questions or comments about it, send
+them to me at mbp@geomtech.com.
+
+NOTE to CVS users: some of the *.cpp files in the source tree are
+derived from other source files using SWIG and re2c (see below).
+These files are not included in the CVS repository, so you'll need
+these tools to do a complete build from the CVS sources.  If you don't
+have these tools on your system you can download a copy of the source
+tree that already has these derived files in it from
+ftp://ftp.sourceforge.net:/pub/sourceforge/geomview (look for a file
+named gv2NNN.tar.gz where NNN is a version number).
+
+There are several prerequistes that you need on your system in order
+to be able to run Geomview 2.0:
+
+	* Python 2.0	(www.python.org)
+			[I have not tried it with earlier versions
+			of Python]
+	* wxPython	(www.wxpython.org)
+			[wxPython in turn as some prerequisites that
+			 you might need to install, such as wxGTK.  Follow
+			 the instructions at www.wxpython.org.]
+	* OpenGL
+
+To compile Geomview 2.0, you'll need a C++ compiler.  If you want to
+edit the *.i files that define the C++ interface to python, you'll
+also need
+
+	* SWIG		(www.swig.org)
+
+If you want to edit Common/Io/IoOoglLexer.re (the source from
+which IoOoglLexer.cpp is created), you'll need:
+
+	* re2c		(http://www.tildeslash.org/re2c/index.html or
+			 http://24.112.22.80/re2c/index.html, if
+			 www.tildeslash.org lookups fail)
+
+
+To compile on unix:
+	% ./configure
+	% make
+
+To run on unix:
+	% cd Py
+	% python gv2.py
+   or	% ./gv2
+	  (after editing Py/gv2 to change the first line to correctly
+	   mention the path to your python2 interpreter)
+
+To compile on Windows:
+	* You'll need Microsoft Visual C++ (I use verson 6.0).  It's
+	  probably possible to compile with other compilers, but I
+	  haven't tried.  If you succeed in doing this please let me know.
+	* Open gv2.dsw and compile the "Common" project; don't compile
+	  the other projects in the workspace.
+	* Open a DOS Command window and run the 'vcvars32.bat' script
+	  that's part of MSVC++; the script "Py/setenv.bat" does that
+	  on my system.  If you installed MSVC++ in the standard place
+	  that script might work for you too.
+	* (In the 'Py' directory) run "nmake -f nmakefile".
+
+To run on Windows:
+	* double-click on the "gv2.py" icon
+     or * in a DOS Command window, run "C:\python20\python gv2.py",
+	  assuming your copy of Python2.0 is installed in C:\python20.
+
+------------------------------------------------------------------------
+
+Mark Phillips @ Geometry Technologies, Inc.
+Suite 550, 413 Wacouta St., St. Paul, MN 55101
+Phone: 651-223-2884  Fax: 651-292-0014
+mbp@geomtech.com       http://www.geomtech.com

@@ -1,0 +1,98 @@
+#! /usr/bin/perl
+
+# usage: liblist LIB
+#
+#    This script takes a single argument which should be the name of
+#    one of the libraries defined in this source tree, and prints out
+#    a list of the libararies that one needs to link with when using
+#    that library, in the correct order.  For example:
+#
+#        [mbp@home Common]$ ./liblist Bases
+#        Bases Io Ut
+#        [mbp@home Common]$ ./liblist Mg
+#        Mg Bases Io Ut Geometry
+#        [mbp@home Common]$ ./liblist Geom
+#        Geom Mg Bases Io Ut Geometry
+#
+#
+#    This script requires GNU Make on your system in order to work.
+#
+#    In order to work correctly, the Makefile section below must list
+#    the dependencies between the libraries.  Keep it up to date if
+#    you introduce new dependencies among the libraries.  To add a
+#    library, add it to the LIBS array just below, and add its
+#    dependencies to the Makefile section.
+#
+#    mbp Sat Feb  3 12:48:13 2001
+
+@LIBS = qw(
+	   Ut
+	   Io
+	   Bases
+	   Geometry
+	   Mg
+	   Geom
+	   Gv
+	   );
+
+$LIBSTRING = join(" ", @LIBS);
+
+########################################################################
+
+$Makefile = <<EOF
+
+.PHONY: _always
+
+LIBS = $LIBSTRING
+
+\${LIBS}: %: _always
+	\@echo \$\@
+
+# Dependencies go here; libaries listed with no dependencies
+# are ones that stand by themselves.
+
+Ut:
+
+Geometry:	Io
+
+Io:		Ut
+
+Bases:		Ut Io
+
+Mg:		Geometry Ut Bases Io
+
+Geom:		Geometry Mg Io Bases Ut
+
+Gv:		Geom Mg Ut Bases Io Geometry Ut
+
+EOF
+;
+
+########################################################################
+
+foreach $lib (@LIBS) { $LIB{$lib} = 1; }
+
+$target = shift;
+
+if (! $LIB{$target} ) {
+    $libstring = join("|", @LIBS);
+    die "usage: $0 {$libstring}\n";
+}
+
+
+$tmpfile = "/tmp/m.$$";
+
+open(OUT, ">$tmpfile");
+print OUT $Makefile;
+close(OUT);
+
+@lines = ();
+open(MAKE, "make -f $tmpfile $target|");
+while (<MAKE>) {
+  s/\n//g;
+  if (/\S/) { push(@lines, $_); }
+}
+close(MAKE);
+print join(" ", reverse(@lines)) . "\n";
+
+unlink($tmpfile);

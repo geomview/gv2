@@ -1,0 +1,13 @@
+This directory contains a bunch of stuff --- notes and code --- from
+work that I and Lori Thomson and John MacDonald did at the Geometry
+Center on a C++ version of Geomview around 1997-98 (it was all in
+years 19xx rather than 20xx, hence the directory name "y1.9k..").
+
+The code here is not currently used in Geomview 2.0 but I'm keeping
+it around for a while in case it proves useful later.
+
+Many of the notes in the various *.NOTES files don't apply
+to the current 2.0 version, but some do.  I'll sort this
+out and make sense of it later.
+
+mbp Mon Mar 12 22:05:13 2001

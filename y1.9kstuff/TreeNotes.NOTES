@@ -1,0 +1,52 @@
+{ LIST				# body assembly (root)
+
+   { INST			# torso movable
+     transform ...
+     geom { OFF ... }		# torso prim
+   }
+
+   { INST			# neck assembly movable
+     transform ...
+     geom { LIST		# neck assembly
+            { OFF ... }		#   neck prim
+            { INST		#   neck movable
+	      transform ...
+	      geom { OFF ... }	#   head prim
+            }
+          }
+   }
+
+   { INST			# L arm movable
+     transform ...
+     geom { OFF ... }		# L arm prim
+   }
+
+   { INST		        # R arm movable
+     transform ...
+     geom { OFF ... }		# R arm prim
+   }
+
+   { INST			# L leg assembly movable
+     transform ...
+     geom { LIST		# L leg assembly
+            { OFF ... }		#   L leg prim
+            { INST		@   L foot movable
+              transform ...
+              geom { OFF ... }	#   L foot prim
+            }
+          }
+   }
+
+   { INST			# R leg assembly movable
+     transform ...
+     geom { LIST		# R leg assembly
+            { OFF ... }		#   R leg prim
+            { INST		#   R foot movable
+              transform ...
+              geom { OFF ... }	#   R foot prim
+            }
+          }
+   }
+
+
+}
