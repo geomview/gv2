@@ -86,15 +86,17 @@ class CameraFrame(wxFrame):
 
     def OnTranslate(self, event):
         print "OnTranslate"
+	self.canvas.eventHandler.SetMotionMode("translate")
 
     def OnRotate(self, event):
         print "OnRotate"
+	self.canvas.eventHandler.SetMotionMode("rotate")
 
     def OnScale(self, event):
-        print "OnScale"
+        print "OnScale [scale mode not yet implemented]"
 
     def OnOrbit(self, event):
-        print "OnOrbit"
+        print "OnOrbit [orbit mode not yet implemented]"
 
     #def setGeom(self, geom):
     #	self.canvas.setGeom(geom)

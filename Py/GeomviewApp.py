@@ -5,6 +5,7 @@ from wxPython.wx       import *
 from CameraFrame       import *
 from PyGv              import *
 from TestTimer         import *
+from Tree              import *
 
 #from time             import sleep
 
@@ -34,6 +35,7 @@ class GeomviewApp(wxApp):
             print "got an exception!"
             sys.exit()
 	self.universe.AddGeometry( object )
+	self.target = GvPath(self.universe, object )
 
     def OnAbout(self, event):
         dlg = wxMessageDialog(self.frame,
@@ -45,9 +47,20 @@ class GeomviewApp(wxApp):
 
     def OnDoit(self, event):
 	print "Doit!"
-	print "have ", len(self.cameraFrameList), " cameras right now:"
-	for cf in self.cameraFrameList:
-	    print cf
+	self.universe.GetUniverseBase().Save("", "universe.out")
+	print "wrote universe.out"
+        #motion = GvRotateMotion(GvMotion.ONESHOT,
+        #                       self.GetTarget(),
+        #                       self.GetCenter(),
+        #                       self.cameraFrameList[0].canvas.gvCameraPath,
+        #                       0,
+        #                       0.02,
+        #                       0.02,
+        #                       0)
+        #self.addAction(motion)
+        #print "have ", len(self.cameraFrameList), " cameras right now:"
+        #for cf in self.cameraFrameList:
+        #    print cf
 
     def OnExit(self, event):
         self.ExitMainLoop()
@@ -142,6 +155,8 @@ class GeomviewApp(wxApp):
         menuBar.Append(fileMenu,   "&File")
         menuBar.Append(helpMenu,   "&Help")
         self.frame.SetMenuBar(menuBar)
+
+	treePanel = TestTreeCtrlPanel(self.frame)
 
         EVT_MENU(self, ID_LOAD,      self.OnLoad)
         EVT_MENU(self, ID_NEWCAMERA, self.OnNewCamera)

@@ -4,5 +4,6 @@ GvCamera.h
 GvEvent.h
 GvMotion.h
 GvRotateMotion.h
+GvTranslateMotion.h
 GvPath.h
 GvUniverse.h

@@ -100,11 +100,35 @@ public:
     virtual void          SetCurrentPosition(Position pos);
     virtual int           GetCurrentPosition(Position *pos);
     virtual void          UnsetCurrentPosition();
+
     inline  void          SetCurrentPosition(int xMin, int xMax,
 					     int yMin, int yMax) {
       Position pos = {xMin, xMax, yMin, yMax};
       SetCurrentPosition(pos);
     }
+    inline  int           GetCurrentPosition(int *xMin, int *xMax,
+					     int *yMin, int *yMax) {
+      Position pos;
+      int v = GetCurrentPosition(&pos);
+      *xMin = pos.p_XMin;
+      *xMax = pos.p_XMax;
+      *yMin = pos.p_YMin;
+      *yMax = pos.p_YMax;
+      return v;
+    }
+    inline int 	  MapToStandardSquare(int x, int y,
+					      double *sx, double *sy) {
+      *sx =
+	2 * ((double)(x                       - mCurrentPosition.p_XMin))
+	  / ((double)(mCurrentPosition.p_XMax - mCurrentPosition.p_XMin))
+	- 1;
+      *sy =
+	2 * ((double)(y                       - mCurrentPosition.p_YMin))
+	  / ((double)(mCurrentPosition.p_YMax - mCurrentPosition.p_YMin))
+	- 1;
+      return 0;
+    }
+
     // Set/get the window's actual current position. This may differ
     // from the preferred position because the window system may not
     // have allowed the exact preferred position (or the preferred

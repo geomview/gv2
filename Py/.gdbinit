@@ -1,2 +1,2 @@
 br _PyImport_LoadDynamicModule
-run test.py
+run gv2.py hdodec.off

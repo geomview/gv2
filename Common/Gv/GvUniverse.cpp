@@ -11,6 +11,11 @@ GvUniverse::GvUniverse()
     mpWorldBase = new GeomWrapped();
     mpWorldList = new GeomList();
 
+    mpUniverseBase->SetName("UniverseBase");
+    mpUniverseList->SetName("UniverseList");
+    mpWorldBase->SetName("WorldBase");
+    mpWorldList->SetName("WorldList");
+
     mpUniverseBase->AddChild(mpUniverseList);
     mpUniverseList->AddChild(mpWorldBase);
     mpWorldBase->AddChild(mpWorldList);

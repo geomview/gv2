@@ -47,19 +47,26 @@ static const short *list_bits = NULL;
 // mbp Wed Nov 12 23:05:55 1997
 
 // Write the List in OOGL format.
-int GeomList::Save(IoDataStream *s)
+int GeomList::Save(char *indent, IoDataStream *s)
 {
-    s->PrintF("LIST\n\n");
-
-    int i, n = GetChildCount();
-    for (i = 0; i < n; i++)
-    {
-        s->PrintF("{ ");
-        mGeomList[i]->Save(s);
-        s->PrintF("}\n");
-    }
-
-    return !s->error();
+  char *INDENT = indent ? indent : "";
+  s->PrintF("%sLIST", INDENT);
+  if (mpName) { s->PrintF("  # %s", mpName); }
+  s->PrintF("\n");
+  int i, n = GetChildCount();
+  char buffer[1024], *NEWINDENT;
+  if (indent) {
+    sprintf(buffer, "%s  ", indent);
+    NEWINDENT = buffer;
+  } else {
+    NEWINDENT = NULL;
+  }
+  for (i = 0; i < n; i++) {
+    s->PrintF("%s{\n", INDENT);
+    mGeomList[i]->Save(NEWINDENT, s);
+    s->PrintF("%s}\n", INDENT);
+  }
+  return !s->error();
 }
 
 

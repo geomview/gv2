@@ -30,53 +30,47 @@ GvMotion::~GvMotion()
 
 void GvMotion::Execute(unsigned int t)
 {
-//char buffer[1024];
-//printf("GvMotion::Execute--------------------------------------\n");
+  char buffer[1024];
+  //printf("GvMotion::Execute------- this=0x%x ---------\n", this);
 
-  Transform3 Vfp;
+  Transform3 Vfp, Tm, Tminv, Tc, Tcinv, Tf, Tfinv, Pf, Pfinv, A;
+
   ComputeLocalTransform(&Vfp, t);
-//PRINTTRANSFORM(Vfp);
 
-  Transform3 Tm, Tc, Tf;
   mpMoving->GetCumulativeTransform(&Tm);
   mpCenter->GetCumulativeTransform(&Tc);
   mpFrame->GetCumulativeTransform(&Tf);
-//PRINTTRANSFORM(Tm);
-//PRINTTRANSFORM(Tc);
-//PRINTTRANSFORM(Tf);
 
+  Tminv.InverseOf(&Tm);
+  Tcinv.InverseOf(&Tc);
+  Tfinv.InverseOf(&Tf);
 
   //
   // This could be significantly optimized later.
   //
 
-  Transform3 Tfinv;
-  Tfinv.InverseOf(&Tf);
-//PRINTTRANSFORM(Tfinv);
   HPoint3 p0;
   Tc.HPoint3Transform(&HPoint3::ORIGIN, &p0);   // p0 = p * Tc
   HPoint3 pf;
   Tfinv.HPoint3Transform(&p0, &pf);             // pf = p0 * Tfinv
-  Transform3 Pf;
   Pf.TranslateOrigin(&pf);
-//PRINTTRANSFORM(Pf);
-  Transform3 Pfinv;
   Pfinv.InverseOf(&Pf);
-//PRINTTRANSFORM(Pfinv);
-  Transform3 Tminv;
-  Tminv.InverseOf(&Tm);
-//PRINTTRANSFORM(Tminv);
 
-  Transform3 A;
   A.Copy(&Tm);		// A = Tm
+//printf("Tm = %s", A.ToString(buffer));
   A.Concat(&A, &Tfinv);	// A = Tm * Tfinv
+//printf("Tm * Tfinv = %s", A.ToString(buffer));
   A.Concat(&A, &Pfinv);	// A = Tm * Tfinv * Pfinv
+//printf("Tm * Tfinv * Pinv = %s", A.ToString(buffer));
   A.Concat(&A, &Vfp);	// A = Tm * Tfinv * Pfinv * Vfp
+//printf("Tm * Tfinv * Pinv * Vfp = %s", A.ToString(buffer));
   A.Concat(&A, &Pf);	// A = Tm * Tfinv * Pfinv * Vfp * Pf
+//printf("Tm * Tfinv * Pinv * Vfp * Pf = %s", A.ToString(buffer));
   A.Concat(&A, &Tf);	// A = Tm * Tfinv * Pfinv * Vfp * Pf * Tf
+//printf("Tm * Tfinv * Pinv * Vfp * Pf * Tf = %s", A.ToString(buffer));
   A.Concat(&A, &Tminv);	// A = Tm * Tfinv * Pfinv * Vfp * Pf * Tf * Tminv
+//printf("Tm * Tfinv * Pinv * Vfp * Pf * Tf * Tminv = %s", A.ToString(buffer));
 
-//PRINTTRANSFORM(A);
 
   Transform3 *movingLocal = mpMoving->GetLocalTransform();
   if (movingLocal == NULL) {
@@ -85,10 +79,24 @@ void GvMotion::Execute(unsigned int t)
 		  "GvMotion::Execute: can't find local "
 		  "transform of moving object");
   }
-//PRINTTRANSFORM((*movingLocal));
-//printf("appying A now\n");
-  movingLocal->Concat(movingLocal, &A);
-//PRINTTRANSFORM((*movingLocal));
+
+//  PRINTTRANSFORM(Vfp);
+//  PRINTTRANSFORM(Tm);
+//  PRINTTRANSFORM(Tminv);
+//  PRINTTRANSFORM(Tc);
+//  PRINTTRANSFORM(Tcinv);
+//  PRINTTRANSFORM(Tf);
+//  PRINTTRANSFORM(Tfinv);
+//  PRINTTRANSFORM(Pf);
+//  PRINTTRANSFORM(Pfinv);
+//  PRINTTRANSFORM(A);
+//  PRINTTRANSFORM((*movingLocal));
+//  printf("appying A now\n");
+
+  movingLocal->Concat(&A, movingLocal);
+
+//  PRINTTRANSFORM((*movingLocal));
+
 }
 
 UtBool GvMotion::IsFinished()

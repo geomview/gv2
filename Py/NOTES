@@ -1,26 +1,28 @@
+A =
+    0.91904008    0.36725226      0.143133             0
+    -0.2731958    0.85526925   -0.44031009             0
+   -0.28412238    0.36555812    0.88634956             0
+    0.55830497    0.75689912    0.25550321             1
 
-design world/camera graph structure
-
-
-work out transformations for old GV style mouse motions:
-	target, center, frame, etc.
-
-
-design motion object & motion list
-
-implement motion with timer & tock() function
-
-inertia:
-    if coords of mouse-up differ from coords of last move,
-    impart some inertia
-
-maybe: when a (inertia?) motion event occurs just
-	create a motion in a list of motions maintained
-	for the current world.  Upon redraw, apply
-	all the motions, possibly taking elapsed or
-	current time into account, then actually redraw.
+Ainv = 
+ 0.919043 -0.273195 -0.284127  0
+ 0.367256  0.855273  0.365566  0
+ 0.143135 -0.440315  0.886374  0
+-0.827653 -0.382327 -0.344538  1
 
 
+V =
+ 0.564642, 0.825336, 0, 0
+-0.825336, 0.564642, 0, 0
+ 0, 0, 1, 0
+ 0, 0, 0, 1
+
+Inverse[A] . V . A = 
+ 0.599787  0.686327 -0.411349  0
+-0.776766  0.622823 -0.0934336 0
+ 0.192073  0.375564  0.906676  0
+ 0.762299 -0.193652  0.324223  1
 
 
-more parsing: LIST, INST, VECT, perhaps MESH
+
+

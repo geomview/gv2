@@ -77,19 +77,39 @@ static const short wrap_bits[] = {
     GeomWrapped::WR_FOURDIM,
 };
 
-int GeomWrapped::Save(IoDataStream *s)
+int GeomWrapped::Save(char *indent, IoDataStream *s)
 {
-  s->PrintF("INST\n");
+  char *INDENT = (indent != NULL) ? indent : "";
+  s->PrintF("%sINST", INDENT);
+  if (mpName) { s->PrintF("  # %s", mpName); }
+  s->PrintF("\n");
 
-    // Print the appearance and the transform.
-    if (mpAppearance) mpAppearance->Save(s);
-    //    GeomOldOoglParser::Save(s, &mTransform);
+  // Print the appearance and the transform.
+  //if (mpAppearance) mpAppearance->Save(s);
+
+  Transform3 *T = &mTransform;
+  s->PrintF("%stransform\n", INDENT);
+  s->PrintF("%s  %15f  %15f  %15f  %15f\n", INDENT,
+	    T->D.M[0][0], T->D.M[0][1], T->D.M[0][2], T->D.M[0][3]);
+  s->PrintF("%s  %15f  %15f  %15f  %15f\n", INDENT,
+	    T->D.M[1][0], T->D.M[1][1], T->D.M[1][2], T->D.M[1][3]);
+  s->PrintF("%s  %15f  %15f  %15f  %15f\n", INDENT,
+	    T->D.M[2][0], T->D.M[2][1], T->D.M[2][2], T->D.M[2][3]);
+  s->PrintF("%s  %15f  %15f  %15f  %15f\n", INDENT,
+	    T->D.M[3][0], T->D.M[3][1], T->D.M[3][2], T->D.M[3][3]);
 
     // Print the geom inside of braces {}.
     if (mpGeom) {
-        s->PrintF("geom { ");
-        mpGeom->Save(s);
-        s->PrintF("}\n");
+        s->PrintF("%sgeom {\n", INDENT);
+	char buffer[1024], *NEWINDENT;
+	if (indent) {
+	  sprintf(buffer, "%s  ", indent);
+	  NEWINDENT = buffer;
+	} else {
+	  NEWINDENT = NULL;
+	}
+        mpGeom->Save(NEWINDENT, s);
+        s->PrintF("%s}\n", INDENT);
     }
 
     return !s->error();

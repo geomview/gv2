@@ -5,6 +5,7 @@
 
 class MgContext {
 public:
-  void SetCamera(MgCamera *);
+  void      SetCamera(MgCamera *);
+  MgWindow *GetWindow();
 };
 

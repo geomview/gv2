@@ -11,8 +11,8 @@ public:
 		 GvPath      *center,
 		 GvPath      *frame,
 		 unsigned int t0,
-		 int          dx,
-		 int          dy,
+		 double       dx,
+		 double       dy,
 		 int          dt);
   virtual void ComputeLocalTransform(Transform3 *M,
 				     unsigned int t = 0);

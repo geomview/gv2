@@ -7,7 +7,7 @@ EXTRA_DIST = \
   gv2 gv2.py \
   PyGv.i \
   NOTES \
-  CameraCanvas.py  EventHandler.py  PyGv.py    test.py \
+  CameraCanvas.py  EventHandler.py  PyGv.py \
   CameraFrame.py   GeomviewApp.py \
   PyGv_wrap.cpp dodec.off person.oogl data.oogl \
   loadtest.cpp TestTimer.py \
@@ -61,6 +61,7 @@ COMMONIFILES =                      \
     ../Common/Gv/GvCamera.i	    \
     ../Common/Gv/GvMotion.i	    \
     ../Common/Gv/GvRotateMotion.i   \
+    ../Common/Gv/GvTranslateMotion.i \
     ../Common/Gv/GvUniverse.i	    \
     ../Common/Gv/GvPath.i	    \
     ../Common/Mg/MgContext.i	    \

@@ -32,38 +32,39 @@ public:
     virtual ~GeomWrapped();
 
   //    virtual int Load(class IoOldOoglLexer *lex, char *keyword = NULL);
-    virtual int Load(class IoOoglLexer *lex, char *keyword = NULL);
-    virtual int Save(class IoDataStream *s);
-    virtual void Draw(class MgContext *mg);
+  virtual int Load(class IoOoglLexer *lex, char *keyword = NULL);
+  inline int  Save(class IoDataStream *s) { return Save(NULL, s); }
+  virtual int Save(char *indent, class IoDataStream *s);
+  virtual void Draw(class MgContext *mg);
 
-    virtual void SetTransform(const Transform3 &T);
-    virtual Transform3 *GetTransform();
+  virtual void SetTransform(const Transform3 &T);
+  virtual Transform3 *GetTransform();
+  
+  virtual void SetAppearance(MgAppearance *ap);
+  virtual MgAppearance *GetAppearance();
 
-    virtual void SetAppearance(MgAppearance *ap);
-    virtual MgAppearance *GetAppearance();
+  // Multiply transformation #i by T on either the right or the left.
+  virtual void RightMultiply(Transform3 &T);
+  virtual void LeftMultiply(Transform3 &T);
 
-    // Multiply transformation #i by T on either the right or the left.
-    virtual void RightMultiply(Transform3 &T);
-    virtual void LeftMultiply(Transform3 &T);
-
-    // Clear out all information stored in this GeomWrapped --- remove
-    // the child, transforms, appearances, and reset the flags,
-    // leaving an empty object ready for reuse.
-    void Clear();
-
-
-    virtual int   GetChildCount();
-    virtual Geom *GetChild(int index = 0);
-    virtual void  AddChild(Geom *geom);
-    virtual void  RemoveChild(Geom *geom);
-    virtual int   GetChildIndex(Geom *geom);
-    virtual void  RemoveChild(int index = 0);
+  // Clear out all information stored in this GeomWrapped --- remove
+  // the child, transforms, appearances, and reset the flags,
+  // leaving an empty object ready for reuse.
+  void Clear();
 
 
-    enum
-    {
-        WR_FOURDIM = 0x1,       // Four dimensional
-    };
+  virtual int   GetChildCount();
+  virtual Geom *GetChild(int index = 0);
+  virtual void  AddChild(Geom *geom);
+  virtual void  RemoveChild(Geom *geom);
+  virtual int   GetChildIndex(Geom *geom);
+  virtual void  RemoveChild(int index = 0);
+  
+  
+  enum
+  {
+    WR_FOURDIM = 0x1,       // Four dimensional
+  };
 
 private:
   int           mFlags;

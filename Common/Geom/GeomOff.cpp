@@ -459,47 +459,49 @@ void GeomOff::Draw(MgContext *mg)
 ///
 /// THIS IS JUST FOR TESTING.  SOME FLAGS ARE IGNORED I THINK -Lori.
 ///
-int GeomOff::Save(IoDataStream *s)
+int GeomOff::Save(char *indent, IoDataStream *s)
 {
-    Geom::Save(s);
-
     int i, j;
     Vertex *v;
     char keys[sizeof(off_keys)/sizeof(off_keys[0])*2+1];
 
+    if (indent==NULL) { indent = ""; }
+
     //GeomOldOoglParser::MakeHeader(mFlags, keys, off_keys, off_bits);
     //s->PrintF("%sOFF\n%d %d %d\n\n", keys, mNVerts, mNPolys, 0);
-    s->PrintF("OFF\n%d %d %d\n\n", mNVerts, mNPolys, 0);
+    s->PrintF("%sOFF\n%s%d %d %d\n\n", indent, indent, mNVerts, mNPolys, 0);
 
     for (v = mVL, i = 0; i < mNVerts; v++, i++)
     {
-        s->PrintF("%g %g %g", v->pt.x, v->pt.y, v->pt.z);
-        if (mFlags & PL_FOURDIM) 
-            s->PrintF(" %g", v->pt.w);
-        if (mFlags & PL_HASVN) 
-            s->PrintF("\t%g %g %g", v->vn.x, v->vn.y, v->vn.z);
-        if (mFlags & PL_HASVCOL)
-            s->PrintF("\t%g %g %g %g",
-                v->vcol[0],v->vcol[1],v->vcol[2],v->vcol[3]);
-        if (mFlags & PL_HASST)
-            s->PrintF("\t%g %g", v->st[0], v->st[1]);
-        s->PrintF("\n");
+      s->PrintF("%s", indent);
+      s->PrintF("%g %g %g", v->pt.x, v->pt.y, v->pt.z);
+      if (mFlags & PL_FOURDIM) 
+	s->PrintF(" %g", v->pt.w);
+      if (mFlags & PL_HASVN) 
+	s->PrintF("\t%g %g %g", v->vn.x, v->vn.y, v->vn.z);
+      if (mFlags & PL_HASVCOL)
+	s->PrintF("\t%g %g %g %g",
+		  v->vcol[0],v->vcol[1],v->vcol[2],v->vcol[3]);
+      if (mFlags & PL_HASST)
+	s->PrintF("\t%g %g", v->st[0], v->st[1]);
+      s->PrintF("\n");
     }
     s->PrintF("\n");
 
     for (i=0; i<mNPolys; i++)
     {
-        Poly *p = &mP[i];
-        s->PrintF("%d  ", p->n_vertices);
+      Poly *p = &mP[i];
+      s->PrintF("%s", indent);
+      s->PrintF("%d  ", p->n_vertices);
 
-        for (j=0; j<p->n_vertices; j++)
-            s->PrintF("%d ", p->v[j] - &mVL[0]);
+      for (j=0; j<p->n_vertices; j++)
+	s->PrintF("%d ", p->v[j] - &mVL[0]);
 
-        if (mFlags & PL_HASPCOL)
-            s->PrintF("\t%g %g %g %g",
-                p->pcol.GetRed(), p->pcol.GetGreen(),
-                p->pcol.GetBlue(), p->pcol.GetAlpha());
-        s->PrintF("\n");
+      if (mFlags & PL_HASPCOL)
+	s->PrintF("\t%g %g %g %g",
+		  p->pcol.GetRed(), p->pcol.GetGreen(),
+		  p->pcol.GetBlue(), p->pcol.GetAlpha());
+      s->PrintF("\n");
     }
     s->PrintF("\n");
 

@@ -6,7 +6,8 @@
 class Geom
 {
 public:
-  int   Save(char *);
+  int   Save(char *, char *);
+  void  SetName(char *);
   virtual void  Draw(MgOpenGlContext *mg);
 };
 

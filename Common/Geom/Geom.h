@@ -15,28 +15,34 @@
 class Geom : virtual public RefObject,
              virtual public StorageObject
 {
-    TYPE_DECLARE_TYPEINFO(Geom);
+  TYPE_DECLARE_TYPEINFO(Geom);
 
 public:
-    Geom();
-    virtual ~Geom();
+  Geom();
+  virtual ~Geom();
 
-    virtual void  Draw(MgContext *mg) = 0;
-    virtual int   Load(class IoDataStream *s) { return 0; }
+  virtual void  Draw(MgContext *mg) = 0;
+  virtual int   Load(class IoDataStream *s) { return 0; }
   //virtual int   Load(class IoOldOoglLexer *lex) { return Load(lex, NULL); }
   //virtual int   Load(class IoOldOoglLexer *lex, char *keyword) { return 0; }
 
-    virtual int   Load(class IoOoglLexer *lex, char *keyword) { return 0; }
+  virtual int   Load(class IoOoglLexer *lex, char *keyword) { return 0; }
 
-    virtual int   Save(class IoDataStream *s) { return 0; }
+  virtual int   Save(class IoDataStream *s) { return 0; }
+  virtual int   Save(char *file);
 
-    virtual int   Save(char *file);
+  virtual int   Save(char *indent, class IoDataStream *s) { return 0; }
+  virtual int   Save(char *indent, char *file);
 
-    class GeomParent *GetParent() { return mpParent; }
-    void  SetParent(class GeomParent *parent);
+  class GeomParent *GetParent() { return mpParent; }
+  void  SetParent(class GeomParent *parent);
+
+  void SetName(char *name);
+  inline char *GetName() { return mpName; }
 
 protected:
-    class GeomParent *mpParent;
+  class GeomParent *mpParent;
+  char *mpName;
 };
 
 #endif // GEOM_H

@@ -76,10 +76,13 @@ public:
   GeomOff();
   virtual ~GeomOff();
 
+  virtual void Draw(class MgContext *mg);
+
   //virtual int Load(class IoOldOoglLexer *lex,    char *keyword = NULL);
   virtual int Load(class IoOoglLexer *lex, char *keyword = NULL);
-  virtual int Save(class IoDataStream *s);
-  virtual void Draw(class MgContext *mg);
+  inline int  Save(class IoDataStream *s) { return Save(NULL, s); }
+  virtual int Save(char *indent, class IoDataStream *s);
+
 
   enum
   {

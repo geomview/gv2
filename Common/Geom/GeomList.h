@@ -21,10 +21,11 @@ public:
         // its contents, so we don't have to do that here
     }
 
-    virtual void Draw(class MgContext *mg);
+  virtual void Draw(class MgContext *mg);
   //virtual int Load(class IoOldOoglLexer *lex, char *keyword = NULL);
-    virtual int Load(class IoOoglLexer *lex, char *keyword = NULL);
-    virtual int Save(class IoDataStream *s);
+  virtual int Load(class IoOoglLexer *lex, char *keyword = NULL);
+  inline int  Save(class IoDataStream *s) { return Save(NULL, s); }
+  virtual int Save(char *indent, class IoDataStream *s);
 
     // GeomParent functions:
     virtual int   GetChildCount();
