@@ -89,7 +89,7 @@ void MgCamera::GetW2C(Transform3 *T)
 {
   /* mWorldToCam is not always up to date, so update if necessary ... */
   if (mFlag & F_NEWC2W ) {
-    mWorldToCam.Copy(&mCamToWorld);
+    mWorldToCam.InverseOf(&mCamToWorld);
     mFlag &= ~F_NEWC2W;
   }
   /* ... then copy */
